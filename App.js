@@ -18,18 +18,8 @@ const CHOICES = [
   }
 ];
 
-const ChoiceButton = props => {
-  <TouchableOpacity
-    style={styles.buttonStyle}
-    onPress={props.onPress(props.name)}>
-    <Text style={styles.buttonText}>
-      {props.name.charAt(0).toUpperCase() + props.name.slice(1)}
-    </Text>
-  </TouchableOpacity>
-}
-
 const ChoiceCard = ({ player, choice: { uri, name } }) => {
-  const title = choice.name.charAt(0).toUpperCase() + choice.name.slice(1);
+  const title = name.charAt(0).toUpperCase() + name.slice(1);
   return (
     <View style={styles.choiceContainer}>
       <Text style={styles.choiceDescription}>
@@ -40,10 +30,32 @@ const ChoiceCard = ({ player, choice: { uri, name } }) => {
         {title}
       </Text>
     </View>
-  )
-}
+  );
+};
+
+const ChoiceButton = props => {
+  <TouchableOpacity
+    style={styles.buttonStyle}
+    onPress={props.onPress(props.name)}>
+    <Text style={styles.buttonText}>
+      {props.name.charAt(0).toUpperCase() + props.name.slice(1)}
+    </Text>
+  </TouchableOpacity>
+};
+
+
 
 export default class App extends Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      gamePrompt: "Choose your weapon!",
+      userChoice: {},
+      computerChoice: {}
+    }
+  }
+
   getResultColor = () => {
     if (this.state.gamePrompt === 'Defeat') {
       return 'red';
@@ -57,7 +69,7 @@ export default class App extends Component {
   getResult = userChoice => {
     const computerChoice = CHOICES[Math.floor(Math.random() * CHOICES.length)];
 
-    const result = "";
+    let result;
     if (userChoice.name !== computerChoice.name) {
       if (userChoice.name === 'rock') {
         result = computerChoice.name === 'paper' ? 'Defeat' : 'Victory';
@@ -73,7 +85,7 @@ export default class App extends Component {
   }
 
   onPress = userChoice => {
-    const [computerChoice, result] = getResult(userChoice);
+    const [computerChoice, result] = this.getResult(userChoice);
 
     const newComputerChoice = computerChoice;
     const newUserChoice = userChoice;
@@ -86,25 +98,17 @@ export default class App extends Component {
   }
 
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      gamePrompt = "Choose your weapon!",
-      userChoice = "",
-      computerChoice = ""
-    }
-  }
   render() {
     return (
       <View style={styles.container}>
-        <Text style={{ fontSize: '35', color: getResultColor() }}>{this.state.gamePrompt}</Text>
+        <Text style={{ fontSize: 35, color: this.getResultColor() }}>{this.state.gamePrompt}</Text>
         <View style={styles.choicesContainer}>
-          <ChoiceCard player="Player" choice={userChoice} />
+          <ChoiceCard player="Player" choice={this.userChoice} />
           <Text>VS</Text>
-          <ChoiceCard player="Computer" choice={computerChoice} />
+          <ChoiceCard player="Computer" choice={this.computerChoice} />
         </View>
         {
-          CHOICES.map((choice) => {
+          CHOICES.map(choice => {
             return (
               <ChoiceButton key={choice.name} name={choice.name} onPress={this.onPress(choice)} />
             )
