@@ -44,16 +44,45 @@ const ChoiceCard = ({ player, choice: { uri, name } }) => {
 }
 
 export default class App extends Component {
-  
+  getResultColor = () => {
+    if (this.state.gamePrompt === 'Defeat') {
+      return 'red';
+    } else if (this.state.gamePrompt === 'Defeat') {
+      return 'green';
+    } else {
+      return null;
+    }
+  }
+
   getResult = userChoice => {
     const computerChoice = CHOICES[Math.floor(Math.random() * CHOICES.length)];
 
     const result = "";
-    if()
+    if (userChoice.name !== computerChoice.name) {
+      if (userChoice.name === 'rock') {
+        result = computerChoice.name === 'paper' ? 'Defeat' : 'Victory';
+      } else if (userChoice.name === 'paper') {
+        result = computerChoice.name === 'scissors' ? 'Defeat' : 'Victory';
+      } else if (userChoice.name === 'scissors') {
+        result = computerChoice.name === 'rock' ? 'Defeat' : 'Victory';
+      }
+    } else {
+      result = 'Tie';
+    }
+    return ([computerChoice, result]);
   }
-  
+
   onPress = userChoice => {
-    const[computerChoice, result] = getResult(userChoice);
+    const [computerChoice, result] = getResult(userChoice);
+
+    const newComputerChoice = computerChoice;
+    const newUserChoice = userChoice;
+
+    this.setState({
+      gamePrompt: result,
+      userChoice: newUserChoice,
+      computerChoice: newComputerChoice
+    })
   }
 
 
@@ -68,7 +97,7 @@ export default class App extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text>{this.state.gamePrompt}</Text>
+        <Text style={{ fontSize: '35', color: getResultColor() }}>{this.state.gamePrompt}</Text>
         <View style={styles.choicesContainer}>
           <ChoiceCard player="Player" choice={userChoice} />
           <Text>VS</Text>
