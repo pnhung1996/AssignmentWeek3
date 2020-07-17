@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Image, Alert } from 'react-native';
 
 const CHOICES = [
   {
@@ -34,13 +34,15 @@ const ChoiceCard = ({ player, choice: { uri, name } }) => {
 };
 
 const ChoiceButton = props => {
+  return(
   <TouchableOpacity
     style={styles.buttonStyle}
-    onPress={props.onPress(props.name)}>
+    onPress={()=>props.onPress(props.name)}>
     <Text style={styles.buttonText}>
-      {props.name.charAt(0).toUpperCase() + props.name.slice(1)}
+      {props.name.name.charAt(0).toUpperCase() + props.name.name.slice(1)}
     </Text>
   </TouchableOpacity>
+  )
 };
 
 
@@ -51,15 +53,15 @@ export default class App extends Component {
     super(props);
     this.state = {
       gamePrompt: "Choose your weapon!",
-      userChoice: {},
-      computerChoice: {}
+      userChoice: CHOICES[0],
+      computerChoice: CHOICES[0]
     }
   }
 
   getResultColor = () => {
     if (this.state.gamePrompt === 'Defeat') {
       return 'red';
-    } else if (this.state.gamePrompt === 'Defeat') {
+    } else if (this.state.gamePrompt === 'Victory') {
       return 'green';
     } else {
       return null;
@@ -84,7 +86,8 @@ export default class App extends Component {
     return ([computerChoice, result]);
   }
 
-  onPress = userChoice => {
+
+  onPress = (userChoice) => {
     const [computerChoice, result] = this.getResult(userChoice);
 
     const newComputerChoice = computerChoice;
@@ -103,14 +106,14 @@ export default class App extends Component {
       <View style={styles.container}>
         <Text style={{ fontSize: 35, color: this.getResultColor() }}>{this.state.gamePrompt}</Text>
         <View style={styles.choicesContainer}>
-          <ChoiceCard player="Player" choice={this.userChoice} />
+          <ChoiceCard player="Player" choice={this.state.userChoice} />
           <Text>VS</Text>
-          <ChoiceCard player="Computer" choice={this.computerChoice} />
+          <ChoiceCard player="Computer" choice={this.state.computerChoice} />
         </View>
         {
           CHOICES.map(choice => {
             return (
-              <ChoiceButton key={choice.name} name={choice.name} onPress={this.onPress(choice)} />
+              <ChoiceButton key={choice.name} name={choice} onPress={this.onPress} />
             )
           })
         }
