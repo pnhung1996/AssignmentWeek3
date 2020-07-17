@@ -37,9 +37,9 @@ const ChoiceButton = props => {
   return(
   <TouchableOpacity
     style={styles.buttonStyle}
-    onPress={()=>props.onPress(props.name)}>
+    onPress={()=>props.onPress(props.choice)}>
     <Text style={styles.buttonText}>
-      {props.name.name.charAt(0).toUpperCase() + props.name.name.slice(1)}
+      {props.choice.name.charAt(0).toUpperCase() + props.choice.name.slice(1)}
     </Text>
   </TouchableOpacity>
   )
@@ -113,7 +113,7 @@ export default class App extends Component {
         {
           CHOICES.map(choice => {
             return (
-              <ChoiceButton key={choice.name} name={choice} onPress={this.onPress} />
+              <ChoiceButton key={choice.name} choice={choice} onPress={this.onPress} />
             )
           })
         }
