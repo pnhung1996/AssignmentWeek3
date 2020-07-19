@@ -34,14 +34,14 @@ const ChoiceCard = ({ player, choice: { uri, name } }) => {
 };
 
 const ChoiceButton = props => {
-  return(
-  <TouchableOpacity
-    style={styles.buttonStyle}
-    onPress={()=>props.onPress(props.choice)}>
-    <Text style={styles.buttonText}>
-      {props.choice.name.charAt(0).toUpperCase() + props.choice.name.slice(1)}
-    </Text>
-  </TouchableOpacity>
+  return (
+    <TouchableOpacity
+      style={styles.buttonStyle}
+      onPress={() => props.onPress(props.choice)}>
+      <Text style={styles.buttonText}>
+        {props.choice.name.charAt(0).toUpperCase() + props.choice.name.slice(1)}
+      </Text>
+    </TouchableOpacity>
   )
 };
 
@@ -54,7 +54,11 @@ export default class App extends Component {
     this.state = {
       gamePrompt: "Choose your weapon!",
       userChoice: CHOICES[0],
-      computerChoice: CHOICES[0]
+      computerChoice: CHOICES[0],
+      total: 0,
+      win: 0,
+      loose: 0,
+      tie: 0
     }
   }
 
@@ -67,6 +71,8 @@ export default class App extends Component {
       return null;
     }
   }
+
+
 
   getResult = userChoice => {
     const computerChoice = CHOICES[Math.floor(Math.random() * CHOICES.length)];
@@ -93,18 +99,43 @@ export default class App extends Component {
     const newComputerChoice = computerChoice;
     const newUserChoice = userChoice;
 
+    let value = 0;
+
+    value = this.state.total + 1;
     this.setState({
       gamePrompt: result,
       userChoice: newUserChoice,
-      computerChoice: newComputerChoice
+      computerChoice: newComputerChoice,
+      total: value
     })
-  }
 
+    if (result === 'Defeat') {
+      value = this.state.loose + 1;
+      this.setState({
+        loose: value
+      })
+    } else if (result === 'Victory') {
+      value = this.state.win + 1;
+      this.setState({
+        win: value
+      })
+    } else {
+      value = this.state.tie + 1;
+      this.setState({
+        tie: value
+      })
+    }
+
+  }
 
   render() {
     return (
       <View style={styles.container}>
         <Text style={{ fontSize: 35, color: this.getResultColor() }}>{this.state.gamePrompt}</Text>
+        <Text>Total : {this.state.total}</Text>
+        <Text>Win : {this.state.win} ({this.state.total === 0 ? 0 : Math.floor(this.state.win / this.state.total * 100)} %) </Text>
+        <Text>Loose : {this.state.loose} ({this.state.total === 0 ? 0 : Math.floor(this.state.loose / this.state.total * 100)} %) </Text>
+        <Text>Tie : {this.state.tie} ({this.state.total === 0 ? 0 : Math.floor(this.state.tie / this.state.total * 100)} %) </Text>
         <View style={styles.choicesContainer}>
           <ChoiceCard player="Player" choice={this.state.userChoice} />
           <Text>VS</Text>
